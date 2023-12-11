@@ -1,6 +1,7 @@
-from default.resolve_path import resolve_path
-from default.exception_decorator import log_exception
 from tensorflow.python.keras import layers, models, losses
+
+from default.exception_decorator import log_exception
+from default.resolve_path import resolve_path
 
 
 class CNNModel:
@@ -90,6 +91,9 @@ class CNNModel:
         :param classification: Array of classifications corresponding to each image.
         """
 
+        # Reshape the input to a 4d tensor.
+        images = images.reshape(-1, self._input_height, self._input_height, 1)
+
         # Run a train step on the model.
         self._model.fit(images, classification, epochs=self._epochs)
 
@@ -100,6 +104,9 @@ class CNNModel:
         :param images: Image to predict on.
         :return: Return the prediction labels tested with the model.
         """
+
+        # Reshape the input to a 4d tensor.
+        images = images.reshape(-1, self._input_height, self._input_height, 1)
 
         # Return the prediction images.
         return self._model.predict(images)
