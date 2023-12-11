@@ -34,34 +34,36 @@ class CNNModel:
     def initialize(self):
         """Initialize the convolutional neural network."""
 
-        # Initialize a sequential NN model.
-        self._model = models.Sequential()
+        # If the model has not been initialized.
+        if not self._model:
+            # Initialize a sequential NN model.
+            self._model = models.Sequential()
 
-        # Configure input layer.
-        self._model.add(layers.Conv2D(
-            32,
-            (3, 3),
-            activation='relu',
-            input_shape=(self._input_height, self._input_width, 1)
-        ))
+            # Configure input layer.
+            self._model.add(layers.Conv2D(
+                32,
+                (3, 3),
+                activation='relu',
+                input_shape=(self._input_height, self._input_width, 1)
+            ))
 
-        # Configure model layers.
-        self._model.add(layers.MaxPooling2D((2, 2)))
-        self._model.add(layers.Conv2D(64, (3, 3), activation='relu'))
-        self._model.add(layers.MaxPooling2D((2, 2)))
-        self._model.add(layers.Conv2D(64, (3, 3), activation='relu'))
-        self._model.add(layers.Flatten())
-        self._model.add(layers.Dense(128, activation='linear'))
+            # Configure model layers.
+            self._model.add(layers.MaxPooling2D((2, 2)))
+            self._model.add(layers.Conv2D(64, (3, 3), activation='relu'))
+            self._model.add(layers.MaxPooling2D((2, 2)))
+            self._model.add(layers.Conv2D(64, (3, 3), activation='relu'))
+            self._model.add(layers.Flatten())
+            self._model.add(layers.Dense(128, activation='linear'))
 
-        # Configure output layers.
-        self._model.add(layers.Dense(self._classes, activation='softmax'))
+            # Configure output layers.
+            self._model.add(layers.Dense(self._classes, activation='softmax'))
 
-        # Compile model shape.
-        self._model.compile(
-            optimizer='adam',
-            loss=losses.CategoricalCrossentropy(from_logits=True),
-            metrics=['accuracy']
-        )
+            # Compile model shape.
+            self._model.compile(
+                optimizer='adam',
+                loss=losses.CategoricalCrossentropy(from_logits=True),
+                metrics=['accuracy']
+            )
 
     @log_exception
     def save(self, path: str):
@@ -80,8 +82,10 @@ class CNNModel:
         :param path: Path to load the model from.
         """
 
-        # Get the model from the resolved path.
-        self._model = models.load_model(resolve_path(path))
+        # If the model has not been initialized.
+        if not self._model:
+            # Get the model from the resolved path.
+            self._model = models.load_model(resolve_path(path))
 
     @log_exception
     def train(self, images, classification):
