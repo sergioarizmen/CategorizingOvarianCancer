@@ -1,10 +1,12 @@
-import tensorflow as tf
-from tensorflow.keras import datasets, layers, models, losses
+from default.resolve_path import resolve_path
+from default.exception_decorator import log_exception
+from tensorflow.python.keras import layers, models, losses
 
 
 class CNNModel:
     """Convolutional Neural Network model."""
 
+    @log_exception
     def __init__(self,
                  classes: int,
                  input_width: int,
@@ -27,11 +29,9 @@ class CNNModel:
         self._epochs = epochs
         self._with_rotations = with_rotations
 
-        # Configure the CNN.
-        self._configure_cnn()
-
-    def _configure_cnn(self):
-        """Configure the convolutional neural network."""
+    @log_exception
+    def initialize(self):
+        """Initialize the convolutional neural network."""
 
         # Initialize a sequential NN model.
         self._model = models.Sequential()
@@ -58,10 +58,31 @@ class CNNModel:
         # Compile model shape.
         self._model.compile(
             optimizer='adam',
-            loss=tf.keras.losses.CategoricalCrossentropy(from_logits=True),
+            loss=losses.CategoricalCrossentropy(from_logits=True),
             metrics=['accuracy']
         )
 
+    @log_exception
+    def save(self, path: str):
+        """
+        Save the model to the given path.
+        :param path: The path to save the model to.
+        """
+
+        # Save the model to the resolved path.
+        self._model.save(resolve_path(path))
+
+    @log_exception
+    def load(self, path: str):
+        """
+        Load the model from a given path.
+        :param path: Path to load the model from.
+        """
+
+        # Get the model from the resolved path.
+        self._model = models.load_model(resolve_path(path))
+
+    @log_exception
     def train(self, images, classification):
         """
         Train based on a set of images.
@@ -71,3 +92,14 @@ class CNNModel:
 
         # Run a train step on the model.
         self._model.fit(images, classification, epochs=self._epochs)
+
+    @log_exception
+    def predict(self, images):
+        """
+        Predict the label of a given images.
+        :param images: Image to predict on.
+        :return: Return the prediction labels tested with the model.
+        """
+
+        # Return the prediction images.
+        return self._model.predict(images)
