@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "machinelearning2"
+version = "0.1.0"
+description = ""
+authors = ["SergioAFRTM <sergioarizmen@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.9,<3.11"
+opencv-python = "^4.8.1.78"
+pandas = "^2.1.4"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
